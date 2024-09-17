@@ -1110,11 +1110,11 @@ void LayerNormalizationImpl(float* out,
       sqSum += ex * ex;
     }
 
-    float sigma = std::sqrt(sqSum / cols + eps);
+    float inv_sigma = 1.0/std::sqrt(sqSum / cols + eps);
 
     #pragma omp simd
     for(int i = 0; i < cols; ++i) {
-      float t = alpha[alphaStride * i] * ((sp[i] - mean) / sigma);
+      float t = alpha[alphaStride * i] * ((sp[i] - mean) * inv_sigma);
       if(hasBeta)
         t += beta[betaStride * i];
 
